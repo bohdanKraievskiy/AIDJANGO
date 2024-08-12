@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'css/auth/index_81o91h.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+</head>
+<body>
+
+    <div class="container">
+
+        <div class="filter"></div>
+
+        <div class="form-container">
+            {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                        <div class="message {{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <form method="post" action="{% url 'register' %}">
+
+                <div class="input-block">
+                    <label for="username">Username</label>
+                    <input id="username" type="text" name="username" required>
+                </div>
+
+                <div class="input-block">
+                    <label for="email">Email</label>
+                    <input id="email" type="email" name="email" required>
+                </div>
+
+                <div class="input-block">
+                    <label for="password">Password</label>
+                    <input id="password" type="password" name="password" required>
+                </div>
+
+                <div class="input-block">
+                    <label for="password2">Confirm Password</label>
+                    <input id="password2" type="password" name="password2" required>
+                </div>
+
+                {% csrf_token %}
+
+                <div class="button-block">
+                    <button type="submit">Sign up</button>
+                </div>
+
+            </form>
+        </div>
+
+        <div class="filter"></div>
+
+    </div>
+
+</body>
+</html>

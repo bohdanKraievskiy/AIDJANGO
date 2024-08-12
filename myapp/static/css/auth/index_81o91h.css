@@ -1,0 +1,86 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+
+* {
+    font-family: "Roboto Condensed", sans-serif;
+    font-style: normal;
+}
+
+html, body {
+    background-color: rgb(32, 32, 32);
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 100vw;
+    height: 100vh;
+
+    display: grid;
+    grid-template-columns: 40vw 20vw 40vw;
+}
+
+form {
+    color: #ffffff;
+    font-size: 40px;
+    margin-top: 50%;
+}
+
+.input-block {
+    margin-bottom: 1rem;
+}
+
+.input-block > label, .input-block > input {
+    width: 100%;
+}
+
+input {
+    font-size: 25px;
+    outline: none;
+    border: 1px solid #a0a0a0;
+    border-radius: 5px;
+    padding: 0.2rem 0.5rem;
+    background-color: inherit;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+input:focus {
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+}
+
+button {
+    font-size: 30px;
+    outline: none;
+    border: 1px solid #a0a0a0;
+    border-radius: 5px;
+    padding: 0.2rem 0.5rem;
+    background-color: inherit;
+    color: #ffffff;
+    font-weight: 600;
+    cursor: pointer;
+    width: 50%;
+}
+
+button:hover {
+    background-color: #353535;
+}
+
+.messages {
+    margin-bottom: 20px;
+}
+
+.message {
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.message.success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
