@@ -1,47 +1,64 @@
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
-from django.contrib.auth.models import User
-from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
-from django.http import JsonResponse, HttpResponseBadRequest
+from django.http import JsonResponse
 from django.conf import settings
 from django.contrib import messages
+from rest_framework_simplejwt.tokens import RefreshToken
 from pymongo.errors import DuplicateKeyError
-from django.views.decorators.csrf import csrf_exempt
-import json
+import re
+import uuid
+
 db = settings.MONGO_DB
 users_collection = settings.MONGO_DB['users']
+
 def home(request):
     return render(request, 'auth/home.html')
 
-def authenticate(request, username, password):
-    user = users_collection.find_one({'username': username, 'password': password})
-    if user:
-        # Создаем объект пользователя для Django
-        class User:
-            def __init__(self, username):
-                self.username = username
-                self.is_authenticated = True
+class CustomUser:
+    def __init__(self, id, username):
+        self.id = id
+        self.username = username
+        self.is_authenticated = True
 
-        return User(username)
-    return None
+def validate_password(password):
+    if len(password) < 8:
+        return False, "Password must be at least 8 characters long"
+    if not re.search(r'[A-Z]', password):
+        return False, "Password must contain at least one uppercase letter"
+    if not re.search(r'[a-z]', password):
+        return False, "Password must contain at least one lowercase letter"
+    if not re.search(r'[0-9]', password):
+        return False, "Password must contain at least one digit"
+    return True, ""
 
+def get_mac_address():
+    mac = ':'.join(re.findall('..', '%012x' % uuid.getnode()))
+    return mac
 
 def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('login')
         password = request.POST.get('password')
 
-        user = authenticate(request, username=username, password=password)
+        user = users_collection.find_one({'username': username, 'password': password})
         if user:
-            auth_login(request, user)
+            custom_user = CustomUser(id=user['_id'], username=user['username'])
+            refresh = RefreshToken.for_user(custom_user)
+            access_token = str(refresh.access_token)
+
+            # Обновлення інформації в MongoDB
+            users_collection.update_one({'username': username},
+                                        {'$set': {'auth_status': 'authorized', 'token': access_token}})
+
             messages.success(request, 'Login successful')
-            return redirect('home')
+            response = redirect('login')
+            response.set_cookie('access_token', access_token)
+            return response
         else:
             messages.error(request, 'Invalid username or password')
             return redirect('login')
 
     return render(request, 'auth/login.html')
-
 
 def reg_view(request):
     if request.method == 'POST':
@@ -54,8 +71,17 @@ def reg_view(request):
             messages.error(request, "All fields are required")
             return redirect('register')
 
+        if len(username) < 5:
+            messages.error(request, "Username must be at least 5 characters long")
+            return redirect('register')
+
         if password != confirm_password:
             messages.error(request, "Passwords do not match")
+            return redirect('register')
+
+        is_valid, error_msg = validate_password(password)
+        if not is_valid:
+            messages.error(request, error_msg)
             return redirect('register')
 
         if users_collection.find_one({'username': username}):
@@ -66,11 +92,15 @@ def reg_view(request):
             messages.error(request, "Email already exists")
             return redirect('register')
 
+        mac_address = get_mac_address()
+
         try:
             users_collection.insert_one({
                 'username': username,
                 'email': email,
-                'password': password
+                'password': password,
+                'mac_address': mac_address,
+                'auth_status': 'unauthorized'
             })
             messages.success(request, "Registration successful")
             return redirect('home')
@@ -81,5 +111,6 @@ def reg_view(request):
     return render(request, 'auth/reg.html')
 
 def logout_view(request):
-    auth_logout(request)
-    return redirect('home')
+    response = redirect('home')
+    response.delete_cookie('access_token')
+    return response

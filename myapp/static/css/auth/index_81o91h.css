@@ -1,78 +1,100 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
-
-* {
-    font-family: "Roboto Condensed", sans-serif;
-    font-style: normal;
-}
 
 html, body {
-    background-color: rgb(32, 32, 32);
     margin: 0;
     padding: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgb(32, 32, 32);
+    font-family: Arial, sans-serif;
+    overflow: hidden;
 }
 
+
+/* Центрування контейнера на сторінці */
 .container {
-    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     height: 100vh;
-
-    display: grid;
-    grid-template-columns: 40vw 20vw 40vw;
+    width: 100vw;
 }
 
+/* Контейнер форми */
+.form-container {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 2rem;
+    width: 400px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Стиль для форм */
 form {
-    color: #ffffff;
-    font-size: 40px;
-    margin-top: 50%;
+    color: black;
+    font-size: 18px;
+    display: flex;
+    flex-direction: column;
 }
 
+/* Стиль для блоку вводу */
 .input-block {
     margin-bottom: 1rem;
 }
 
+/* Стиль для міток та полів вводу */
 .input-block > label, .input-block > input {
     width: 100%;
 }
 
 input {
-    font-size: 25px;
+    font-size: 16px;
     outline: none;
     border: 1px solid #a0a0a0;
     border-radius: 5px;
-    padding: 0.2rem 0.5rem;
-    background-color: inherit;
-    color: #ffffff;
-    font-weight: 600;
+    padding: 0.5rem;
+    background-color: #f9f9f9;
+    color: #333;
+    font-weight: 400;
 }
 
+/* Стиль для фокусу на ввід */
 input:focus {
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    border-color: #007bff;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
 }
 
+/* Стиль для кнопок */
 button {
-    font-size: 30px;
-    outline: none;
-    border: 1px solid #a0a0a0;
-    border-radius: 5px;
-    padding: 0.2rem 0.5rem;
-    background-color: inherit;
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    font-size: 16px;
     color: #ffffff;
-    font-weight: 600;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
-    width: 50%;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 button:hover {
-    background-color: #353535;
+    background-color: #0056b3;
+    transform: scale(1.05);
 }
 
+button:active {
+    transform: scale(0.95);
+}
+
+/* Стиль для повідомлень */
 .messages {
-    margin-bottom: 20px;
+    margin-bottom: 1rem;
 }
 
 .message {
-    padding: 10px;
+    padding: 0.75rem;
     border-radius: 5px;
-    margin-bottom: 10px;
+    margin-bottom: 0.5rem;
+    font-size: 14px;
 }
 
 .message.success {
